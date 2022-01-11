@@ -109,6 +109,7 @@ ln -s /home/marina/Workspace/Dataset/DOTA-ImgSplit/val/images /home/marina/Works
 ················└─ annotations  
 ························├─ instances_train2017.json  
 ························└─ instances_val2017.json  
+········└─ ...  
 
 ### 修改mmdet config
 

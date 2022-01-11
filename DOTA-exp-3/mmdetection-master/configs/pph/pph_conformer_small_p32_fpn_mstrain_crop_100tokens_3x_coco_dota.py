@@ -3,7 +3,7 @@ _base_ = [
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
 
-pretrained='/home/ubuntu/Workspace/YuHongtian/mmdetection-master/work_dirs/Conformer_small_patch32.pth'
+pretrained='/home/ubuntu/Dataset/pretrained/Conformer_small_patch32.pth'
 num_stages = 7
 cross_attention_flag = [False, True, True, True, True, True, True,]
 num_proposals = 100

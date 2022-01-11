@@ -70,7 +70,7 @@ model = dict(
 optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
 # dataset settings
 dataset_type = 'Dota2CocoDataset' ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### modified
-data_root = '/home/marina/Workspace/Dataset/DOTA-ImgSplit-COCO/' ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### modified
+data_root = '/home/ubuntu/Dataset/DOTA-ImgSplit-COCO/' ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### modified
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
