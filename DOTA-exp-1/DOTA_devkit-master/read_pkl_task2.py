@@ -47,20 +47,22 @@ split_detpath = os.path.join(saveDir, 'Task2_{:s}.txt')
 # merge后的所有类别的txt文件
 detpath = os.path.join(mergeDir, 'Task2_{:s}.txt')
 
+# 数据集根路径
+dataset_root = "/home/marina/Workspace/Dataset/"
 # 验证集的原始标注txt文件
-annopath = r'/home/marina/Workspace/Dataset/DOTA/val/labelTxt/{:s}.txt'
+annopath = dataset_root + r'DOTA/val/labelTxt/{:s}.txt'
 # 验证集的原始图片名文件
-imagesetfile = r'/home/marina/Workspace/Dataset/DOTA/val/valset.txt'
+imagesetfile = dataset_root + r'DOTA/val/valset.txt'
 # 分割前的图片路径
-ori_img_path = r'/home/marina/Workspace/Dataset/DOTA/val/images/'
+ori_img_path = dataset_root + r'DOTA/val/images/'
 # 分割后的图片路径
-split_img_path = r'/home/marina/Workspace/Dataset/DOTA-ImgSplit/val/images/'
+split_img_path = dataset_root + r'DOTA-ImgSplit/val/images/'
 # 分割后的json文件路径
-split_json_path = r'/home/marina/Workspace/Dataset/DOTA-ImgSplit-COCO/annotations/instances_val2017.json'
+split_json_path = dataset_root + r'DOTA-ImgSplit-COCO/annotations/instances_val2017.json'
 # 分割后的标注txt文件
-split_annopath = r'/home/marina/Workspace/Dataset/DOTA-ImgSplit/val/labelTxt/{:s}.txt'
+split_annopath = dataset_root + r'DOTA-ImgSplit/val/labelTxt/{:s}.txt'
 # 分割后的图片名文件
-split_imagesetfile = r'/home/marina/Workspace/Dataset/DOTA-ImgSplit/val/valset.txt'
+split_imagesetfile = dataset_root + r'DOTA-ImgSplit/val/valset.txt'
 
 classnames = ['plane', 'baseball-diamond', 'bridge', 'ground-track-field', 'small-vehicle', 'large-vehicle', 'ship', 'tennis-court',
             'basketball-court', 'storage-tank',  'soccer-ball-field', 'roundabout', 'harbor', 'swimming-pool', 'helicopter']

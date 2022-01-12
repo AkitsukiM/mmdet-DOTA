@@ -141,7 +141,7 @@ CUDA_VISIBLE_DEVICES=4,5,6,7 nohup ./tools/dist_train.sh ./configs/paa/paa_r50_f
 ### 测试
 
 ```shell
-python ./tools/test.py ./configs/paa/paa_r50_fpn_1x_coco_dota_test_1.py work_dirs/paa_r50_fpn_1x_coco_dota_test_1/epoch_12.pth --out /home/marina/Workspace/DOTA_devkit-master/xxx.pkl --eval bbox
+python ./tools/test.py ./configs/paa/paa_r50_fpn_1x_coco_dota_test_1.py ./work_dirs/paa_r50_fpn_1x_coco_dota_test_1/epoch_12.pth --out /home/marina/Workspace/DOTA_devkit-master/xxx.pkl --eval bbox
 ```
 
 得到pkl文件
