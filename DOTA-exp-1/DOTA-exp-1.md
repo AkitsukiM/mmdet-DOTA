@@ -9,7 +9,6 @@ conda install pytorch=1.7.0 torchvision torchaudio cudatoolkit=10.2 -c pytorch
 pip install mmcv-full
 pip install -r requirements/build.txt
 pip install -v -e .
-conda activate openmmlab
 ```
 
 ## DOTA_devkit安装：

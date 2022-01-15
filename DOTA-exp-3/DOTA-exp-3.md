@@ -18,7 +18,9 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 nohup ./tools/dist_train.sh ./configs/pph/pph_confo
 
 ## 测试
 
+```shell
 python ./tools/test.py ./configs/pph/pph_conformer_small_p32_fpn_mstrain_crop_100tokens_3x_coco_dota.py ./work_dirs/pph_conformer_small_p32_fpn_mstrain_crop_100tokens_3x_coco_dota/epoch_36.pth --out /home/marina/Workspace/DOTA_devkit-master/pph_conformer_small_p32_fpn_mstrain_crop_100tokens_3x_coco_dota.pkl --eval bbox
+```
 
 before merge:
 
@@ -50,5 +52,5 @@ classaps:  [85.88505428 65.95368292 40.94427667 56.49227469 46.0720221  58.75908
 
 Copyright (c) 2022 Marina Akitsuki. All rights reserved.
 
-Date modified: 2022/01/10
+Date modified: 2022/01/12
 
