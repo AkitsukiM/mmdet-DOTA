@@ -23,8 +23,8 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 ./tools/dist_train.sh ./configs/swin/cascade_rcnn_s
 CUDA_VISIBLE_DEVICES=0,1,2,3 nohup ./tools/dist_train.sh ./configs/swin/cascade_rcnn_swin-t-p4-w7_fpn_1x_coco_dota.py 4 > nohup.log 2>&1 &
 python ./tools/test.py ./configs/swin/cascade_rcnn_swin-t-p4-w7_fpn_1x_coco_dota.py ./work_dirs/cascade_rcnn_swin-t-p4-w7_fpn_1x_coco_dota/epoch_12.pth --out /home/marina/Workspace/DOTA_devkit-master/cascade_rcnn_swin-t-p4-w7_fpn_1x_coco_dota.pkl --eval bbox
 # swin-t-p4-w7_fpn_fp16_ms-crop-3x
-CUDA_VISIBLE_DEVICES=0,1,2,3 ./tools/dist_train.sh ./configs/swin/cascade_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco_dota.py 4
-CUDA_VISIBLE_DEVICES=0,1,2,3 nohup ./tools/dist_train.sh ./configs/swin/cascade_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco_dota.py 4 > nohup.log 2>&1 &
+CUDA_VISIBLE_DEVICES=4,5,6,7 ./tools/dist_train.sh ./configs/swin/cascade_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco_dota.py 4
+CUDA_VISIBLE_DEVICES=4,5,6,7 nohup ./tools/dist_train.sh ./configs/swin/cascade_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco_dota.py 4 > nohup.log 2>&1 &
 python ./tools/test.py ./configs/swin/cascade_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco_dota.py ./work_dirs/cascade_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco_dota/epoch_36.pth --out /home/marina/Workspace/DOTA_devkit-master/cascade_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco_dota.pkl --eval bbox
 # swin-s-p4-w7_fpn_fp16_ms-crop-3x
 CUDA_VISIBLE_DEVICES=0,1,2,3 ./tools/dist_train.sh ./configs/swin/cascade_rcnn_swin-s-p4-w7_fpn_fp16_ms-crop-3x_coco_dota.py 4
@@ -146,6 +146,10 @@ classaps:  [95.44750255 85.095932   50.77639738 69.72405037 50.01056693 69.87040
  64.67279377 95.146655   66.33602179 78.84093638 61.44221814 74.6535651
  79.87794457 66.30418112 76.9839203 ]
 ```
+
+## 正在进行的工作
+
+多尺度测试增强（绝赞失败中）
 
 -----
 

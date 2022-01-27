@@ -149,11 +149,11 @@ python ./tools/test.py ./configs/paa/paa_r50_fpn_1x_coco_dota_test_1.py ./work_d
 
 修改dota_evaluation_task2.py中的parse_gt函数
 
-编写read_pkl_task2.py并运行，包含可视化
+编写试作型HBB_pkl_reader.py
 
 -----
 
 Copyright (c) 2022 Marina Akitsuki. All rights reserved.
 
-Date modified: 2022/01/10
+Date modified: 2022/01/15
 

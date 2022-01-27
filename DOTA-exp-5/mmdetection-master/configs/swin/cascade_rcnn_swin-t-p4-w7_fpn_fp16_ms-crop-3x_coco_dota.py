@@ -25,10 +25,16 @@ model = dict(
         with_cp=False,
         convert_weights=True,
         init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
-    neck=dict(in_channels=[96, 192, 384, 768]))
+    neck=dict(in_channels=[96, 192, 384, 768]),
+    test_cfg=dict(
+        rcnn=dict(
+            max_per_img=1000,
+            # https://github.com/sfzhang15/ATSS/blob/master/configs/atss/atss_dcnv2_X_101_64x4d_FPN_2x.yaml
+            scale_ranges=[[96, 10000], [96, 10000], [64, 10000], [64, 10000], [64, 10000], [0, 10000], [0, 10000], [0, 256], [0, 256], [0, 192], [0, 192], [0, 96]])))
 
 img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+    # mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+    mean=[81.93, 82.84, 78.56], std=[47.23, 45.73, 44.41], to_rgb=True)
 
 # augmentation strategy originates from DETR / Sparse RCNN
 train_pipeline = [
@@ -70,9 +76,46 @@ train_pipeline = [
     dict(type='Normalize', **img_norm_cfg),
     dict(type='Pad', size_divisor=32),
     dict(type='DefaultFormatBundle'),
-    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels', 'gt_masks']),
+    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
 ]
-data = dict(train=dict(pipeline=train_pipeline))
+val_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=(800, 1333),
+        flip=False,
+        transforms=[
+            dict(type='Resize', keep_ratio=True),
+            dict(type='RandomFlip'),
+            dict(type='Normalize', **img_norm_cfg),
+            dict(type='Pad', size_divisor=32),
+            dict(type='ImageToTensor', keys=['img']),
+            dict(type='Collect', keys=['img']),
+        ])
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=[(400, 3000), (500, 3000), (600, 3000), (640, 3000),
+                   (700, 3000), (900, 3000), (1000, 3000), (1100, 3000),
+                   (1200, 3000), (1300, 3000), (1400, 3000), (1800, 3000)],
+        flip=True,
+        transforms=[
+            dict(type='Resize', keep_ratio=True),
+            dict(type='RandomFlip'),
+            dict(type='Normalize', **img_norm_cfg),
+            dict(type='Pad', size_divisor=32),
+            dict(type='ImageToTensor', keys=['img']),
+            dict(type='Collect', keys=['img']),
+        ])
+]
+data = dict(
+    samples_per_gpu=2,
+    workers_per_gpu=2,
+    train=dict(pipeline=train_pipeline),
+    val=dict(pipeline=val_pipeline),
+    test=dict(pipeline=test_pipeline))
 
 optimizer = dict(
     _delete_=True,
