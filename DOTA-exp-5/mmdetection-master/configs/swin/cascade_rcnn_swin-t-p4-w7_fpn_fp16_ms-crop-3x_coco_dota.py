@@ -28,9 +28,8 @@ model = dict(
     neck=dict(in_channels=[96, 192, 384, 768]),
     test_cfg=dict(
         rcnn=dict(
-            max_per_img=1000,
-            # https://github.com/sfzhang15/ATSS/blob/master/configs/atss/atss_dcnv2_X_101_64x4d_FPN_2x.yaml
-            scale_ranges=[[96, 10000], [96, 10000], [64, 10000], [64, 10000], [64, 10000], [0, 10000], [0, 10000], [0, 256], [0, 256], [0, 192], [0, 192], [0, 96]])))
+            nms=dict(type='nms', iou_threshold=0.5),
+            max_per_img=1000)))
 
 img_norm_cfg = dict(
     # mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -40,7 +39,7 @@ img_norm_cfg = dict(
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
-    dict(type='RandomFlip', flip_ratio=0.5),
+    dict(type='RandomFlip', flip_ratio=[0.33, 0.33], direction = ['horizontal', 'vertical']),
     dict(
         type='AutoAugment',
         policies=[[
@@ -97,10 +96,11 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
+        # https://github.com/sfzhang15/ATSS/blob/master/configs/atss/atss_dcnv2_X_101_64x4d_FPN_2x.yaml
         img_scale=[(400, 3000), (500, 3000), (600, 3000), (640, 3000),
                    (700, 3000), (900, 3000), (1000, 3000), (1100, 3000),
                    (1200, 3000), (1300, 3000), (1400, 3000), (1800, 3000)],
-        flip=True,
+        flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=True),
             dict(type='RandomFlip'),

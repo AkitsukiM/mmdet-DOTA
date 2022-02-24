@@ -35,6 +35,8 @@ split_val.splitdata(1)
 
 ```shell
 python ImgSplit.py
+# 100%|███████████████████████████████████████████████████████████████████████████████████████| 1411/1411 [18:20<00:00,  1.28it/s]
+# 100%|█████████████████████████████████████████████████████████████████████████████████████████| 458/458 [06:05<00:00,  1.25it/s]
 ```
 
 ### 修改DOTA2COCO.py的main函数
@@ -48,6 +50,8 @@ DOTA2COCO(r'/home/marina/Workspace/Dataset/DOTA-ImgSplit/val/', r'/home/marina/W
 
 ```shell
 python DOTA2COCO.py
+# 100%|█████████████████████████████████████████████████████████████████████████████████████| 15749/15749 [06:14<00:00, 42.05it/s]
+# 100%|███████████████████████████████████████████████████████████████████████████████████████| 5297/5297 [02:04<00:00, 42.70it/s]
 ```
 
 ### 创建数据集软链接
@@ -114,9 +118,7 @@ ln -s /home/marina/Workspace/Dataset/DOTA-ImgSplit/val/images /home/marina/Works
 
 修改mmdet config文件中的数据集类型为'Dota2CocoDataset'
 
-路径为'/home/marina/Workspace/Dataset/DOTA-ImgSplit-COCO/'
-
-修改batchsize
+修改路径、batchsize等
 
 ### 修改mmdet mmdet datasets
 
@@ -129,21 +131,9 @@ wordname_15 = ['plane', 'baseball-diamond', 'bridge', 'ground-track-field', 'sma
                'basketball-court', 'storage-tank',  'soccer-ball-field', 'roundabout', 'harbor', 'swimming-pool', 'helicopter']
 ```
 
-### 训练
+### 训练与测试
 
-```shell
-python ./tools/train.py ./configs/paa/paa_r50_fpn_1x_coco_dota_test_1.py
-CUDA_VISIBLE_DEVICES=4,5,6,7 ./tools/dist_train.sh ./configs/paa/paa_r50_fpn_1x_coco_dota_test_1.py 4
-CUDA_VISIBLE_DEVICES=4,5,6,7 nohup ./tools/dist_train.sh ./configs/paa/paa_r50_fpn_1x_coco_dota_test_1.py 4 > nohup.log 2>&1 &
-```
-
-### 测试
-
-```shell
-python ./tools/test.py ./configs/paa/paa_r50_fpn_1x_coco_dota_test_1.py ./work_dirs/paa_r50_fpn_1x_coco_dota_test_1/epoch_12.pth --out /home/marina/Workspace/DOTA_devkit-master/xxx.pkl --eval bbox
-```
-
-得到pkl文件
+见DOTA-exp-5。得到pkl文件。
 
 ### 合并
 
@@ -155,5 +145,5 @@ python ./tools/test.py ./configs/paa/paa_r50_fpn_1x_coco_dota_test_1.py ./work_d
 
 Copyright (c) 2022 Marina Akitsuki. All rights reserved.
 
-Date modified: 2022/01/15
+Date modified: 2022/02/19
 

@@ -12,13 +12,11 @@ mmdetection：https://github.com/open-mmlab/mmdetection
 
 DOTA devkit：https://github.com/CAPTAIN-WHU/DOTA_devkit
 
-PPH：https://github.com/CVPR2022-911/PPH
-
 Swin Transformer：https://github.com/SwinTransformer/Swin-Transformer-Object-Detection
 
 -----
 
 Copyright (c) 2022 Marina Akitsuki. All rights reserved.
 
-Date modified: 2022/01/11
+Date modified: 2022/02/24
 

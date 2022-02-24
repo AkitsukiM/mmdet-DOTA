@@ -25,7 +25,7 @@ from visualize import *
 class HBB_pkl_reader(object):
     """
     """
-    def __init__(self, work_root, pkl_name, dataset_root, mode = 0):
+    def __init__(self, work_root, pkl_name, dataset_root, nms_thresh = 0.3, mode = 0):
         # 工作路径
         self.work_root = work_root
         # 工作路径下的子路径
@@ -90,6 +90,7 @@ class HBB_pkl_reader(object):
         # 至此，ind_to_imgname_map的结果是
         # {1: "P1156__1__1648___824.png", 2: "P1513__1__0___2472.png", ..., 5297: "P1699__1__1648___2472.png"}
 
+        self.nms_thresh = nms_thresh
         self.mode = mode
 
     def write_split_imagesetfile(self):
@@ -148,7 +149,7 @@ class HBB_pkl_reader(object):
         # task1: mergebypoly
         # task2: mergebyrec
         print("\nNOW MERGING...")
-        mergebyrec(self.saveDir, self.mergeDir)
+        mergebyrec(self.saveDir, self.mergeDir, self.nms_thresh)
 
     def visualize_mergeDir(self):
         # mergeDir的可视化
@@ -238,8 +239,9 @@ if __name__ == '__main__':
     parser.add_argument("--work_root", type = str, default = "/home/marina/Workspace/DOTA_devkit-master/", help = "work root")
     parser.add_argument("--pkl_name", type = str, default = "xxx.pkl", help = "e.g. xxx.pkl")
     parser.add_argument("--dataset_root", type = str, default = "/home/marina/Workspace/Dataset/", help = "dataset root")
+    parser.add_argument("--nms_thresh", type = float, default = 0.5, help = "nms_thresh when merge")
     parser.add_argument("--mode", type = int, default = 0, help = "visualize mergeDir|saveDir: 0-00, 1-01, 2-10, 3-11")
     opt = parser.parse_args()
 
-    HBB_pkl_reader(work_root = opt.work_root, pkl_name = opt.pkl_name, dataset_root = opt.dataset_root, mode = opt.mode).main()
+    HBB_pkl_reader(work_root = opt.work_root, pkl_name = opt.pkl_name, dataset_root = opt.dataset_root, nms_thresh = opt.nms_thresh, mode = opt.mode).main()
 
