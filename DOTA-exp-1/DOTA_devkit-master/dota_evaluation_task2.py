@@ -35,9 +35,9 @@ def parse_gt(filename):
             # Original version is not matching what DOTA2COCO.py says
 
             xmin, ymin, xmax, ymax = int(min(np.asarray(splitline[0:8:2], dtype=float))), \
-                int(min(np.asarray(splitline[1:8:2], dtype=float))), \
-                int(max(np.asarray(splitline[0:8:2], dtype=float))), \
-                int(max(np.asarray(splitline[1:8:2], dtype=float)))
+                                     int(min(np.asarray(splitline[1:8:2], dtype=float))), \
+                                     int(max(np.asarray(splitline[0:8:2], dtype=float))), \
+                                     int(max(np.asarray(splitline[1:8:2], dtype=float)))
             object_struct['bbox'] = [xmin, ymin, xmax, ymax]
             w = xmax - xmin
             h = ymax - ymin

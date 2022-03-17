@@ -127,7 +127,19 @@ class Dota2CocoDataset(CustomDataset):
         for i, ann in enumerate(ann_info):
             if ann.get('ignore', False):
                 continue
-            x1, y1, w, h = ann['bbox']
+
+            # To satisfy rotated version
+            bbox = ann['bbox']
+            if len(bbox) == 4:
+                x1, y1, w, h = bbox
+                gt_empty = np.zeros((0, 4), dtype=np.float32)
+            elif len(bbox) == 5:
+                x1, y1, w, h, angle = bbox
+                gt_empty = np.zeros((0, 5), dtype=np.float32)
+            else:
+                raise ValueError(f"Invalid length of bbox")
+            # ##### #####
+
             inter_w = max(0, min(x1 + w, img_info['width']) - max(x1, 0))
             inter_h = max(0, min(y1 + h, img_info['height']) - max(y1, 0))
             if inter_w * inter_h == 0:
@@ -136,7 +148,16 @@ class Dota2CocoDataset(CustomDataset):
                 continue
             if ann['category_id'] not in self.cat_ids:
                 continue
-            bbox = [x1, y1, x1 + w, y1 + h]
+
+            # ##### #####
+            if len(bbox) == 4:
+                bbox = [x1, y1, x1 + w, y1 + h]
+            elif len(bbox) == 5:
+                bbox = [x1, y1, w, h, angle]
+            else:
+                pass
+            # ##### #####
+
             if ann.get('iscrowd', False):
                 gt_bboxes_ignore.append(bbox)
             else:
@@ -148,13 +169,13 @@ class Dota2CocoDataset(CustomDataset):
             gt_bboxes = np.array(gt_bboxes, dtype=np.float32)
             gt_labels = np.array(gt_labels, dtype=np.int64)
         else:
-            gt_bboxes = np.zeros((0, 4), dtype=np.float32)
+            gt_bboxes = gt_empty        # ##### #####
             gt_labels = np.array([], dtype=np.int64)
 
         if gt_bboxes_ignore:
             gt_bboxes_ignore = np.array(gt_bboxes_ignore, dtype=np.float32)
         else:
-            gt_bboxes_ignore = np.zeros((0, 4), dtype=np.float32)
+            gt_bboxes_ignore = gt_empty # ##### #####
 
         seg_map = img_info['filename'].replace('jpg', 'png')
 

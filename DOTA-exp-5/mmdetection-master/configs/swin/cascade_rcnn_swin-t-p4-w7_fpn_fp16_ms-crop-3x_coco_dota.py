@@ -4,7 +4,7 @@ _base_ = './cascade_rcnn_r50_fpn_1x_coco_dota.py'
 # from './mask_rcnn_swin-t-p4-w7_fpn_ms-crop-3x_coco.py' ##### #####
 
 
-pretrained = '/home/ubuntu/Dataset/pretrained/swin_tiny_patch4_window7_224.pth'
+pretrained = '/home/marina/Workspace/Dataset/pretrained/swin_tiny_patch4_window7_224.pth'
 
 model = dict(
     backbone=dict(
@@ -25,11 +25,7 @@ model = dict(
         with_cp=False,
         convert_weights=True,
         init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
-    neck=dict(in_channels=[96, 192, 384, 768]),
-    test_cfg=dict(
-        rcnn=dict(
-            nms=dict(type='nms', iou_threshold=0.5),
-            max_per_img=1000)))
+    neck=dict(in_channels=[96, 192, 384, 768]))
 
 img_norm_cfg = dict(
     # mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -38,8 +34,37 @@ img_norm_cfg = dict(
 # augmentation strategy originates from DETR / Sparse RCNN
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
-    dict(type='RandomFlip', flip_ratio=[0.33, 0.33], direction = ['horizontal', 'vertical']),
+    dict(type='LoadAnnotations', with_bbox=True),
+    # dict(type='BoxToBox', mode='rotated_box_to_bbox_np'),
+    # dict(type='RandomFlip', flip_ratio=[0.25, 0.25], direction = ['horizontal', 'vertical']),
+    # 
+    # from https://github.com/csuhan/s2anet/blob/master/configs/hrsc2016/s2anet_r50_fpn_3x_hrsc2016.py ##### #####
+    # 
+    # dict(type='TempVisualize', note = '0-ori', img_rewrite = False, sys_exit = False),
+    dict(type='RotatedRandomFlip', flip_ratio=0.5),
+    # dict(type='TempVisualize', note = '1-flip', img_rewrite = False, sys_exit = False),
+    dict(type='RandomRotate', rotate_ratio=0.5),
+    # dict(type='TempVisualize', note = '2-rotate', img_rewrite = True, sys_exit = False),
+    # 
+    # From https://cocodataset.org/#format-data ,
+    # we can know the original coco bbox format is:
+    # [x, y, width, height]
+    # and after {def _parse_ann_info in class CocoDataset in mmdet/datasets/coco.py} with {class LoadAnnotations in mmdet/datasets/pipelines/loading.py}
+    # we can know the bbox format is:
+    # [xmin, xmax, ymin, ymax]
+    # 
+    # However, when we create dota2coco json, we use the bbox format as
+    # [x_ctr, y_ctr, width, height, angle]
+    # To satisfy this format, we change the {def _parse_ann_info in class Dota2CocoDataset in mmdet/datasets/dota2coco.py}
+    # so that the bbox entering 'RotatedRandomFlip' still has the format of [x_ctr, y_ctr, width, height, angle]
+    # for both gt_bboxes and gt_bboxes_ignore
+    # 
+    # Finally, we use 'rotated_box_to_bbox_np' to change the bbox format to
+    # [xmin, xmax, ymin, ymax]
+    # so that the bbox entering 'Resize' would be correct
+    # 
+    dict(type='BoxToBox', mode='rotated_box_to_bbox_np'),
+    # dict(type='TempVisualize', note='3-final', img_rewrite = False, sys_exit = True),
     dict(
         type='AutoAugment',
         policies=[[
@@ -77,45 +102,10 @@ train_pipeline = [
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
 ]
-val_pipeline = [
-    dict(type='LoadImageFromFile'),
-    dict(
-        type='MultiScaleFlipAug',
-        img_scale=(800, 1333),
-        flip=False,
-        transforms=[
-            dict(type='Resize', keep_ratio=True),
-            dict(type='RandomFlip'),
-            dict(type='Normalize', **img_norm_cfg),
-            dict(type='Pad', size_divisor=32),
-            dict(type='ImageToTensor', keys=['img']),
-            dict(type='Collect', keys=['img']),
-        ])
-]
-test_pipeline = [
-    dict(type='LoadImageFromFile'),
-    dict(
-        type='MultiScaleFlipAug',
-        # https://github.com/sfzhang15/ATSS/blob/master/configs/atss/atss_dcnv2_X_101_64x4d_FPN_2x.yaml
-        img_scale=[(400, 3000), (500, 3000), (600, 3000), (640, 3000),
-                   (700, 3000), (900, 3000), (1000, 3000), (1100, 3000),
-                   (1200, 3000), (1300, 3000), (1400, 3000), (1800, 3000)],
-        flip=False,
-        transforms=[
-            dict(type='Resize', keep_ratio=True),
-            dict(type='RandomFlip'),
-            dict(type='Normalize', **img_norm_cfg),
-            dict(type='Pad', size_divisor=32),
-            dict(type='ImageToTensor', keys=['img']),
-            dict(type='Collect', keys=['img']),
-        ])
-]
 data = dict(
     samples_per_gpu=2,
     workers_per_gpu=2,
-    train=dict(pipeline=train_pipeline),
-    val=dict(pipeline=val_pipeline),
-    test=dict(pipeline=test_pipeline))
+    train=dict(pipeline=train_pipeline))
 
 optimizer = dict(
     _delete_=True,

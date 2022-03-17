@@ -69,19 +69,10 @@ class splitbase():
         self.outlabelpath = os.path.join(self.outpath, 'labelTxt')
         self.choosebestpoint = choosebestpoint
         self.ext = ext
-        # if not os.path.exists(self.outimagepath):
-        #     os.makedirs(self.outimagepath)
-        # if not os.path.exists(self.outlabelpath):
-        #     os.makedirs(self.outlabelpath)
-
-        # remakedirs
-        if os.path.exists(self.outimagepath):
-            shutil.rmtree(self.outimagepath)
-        if os.path.exists(self.outlabelpath):
-            shutil.rmtree(self.outlabelpath)
-            
-        os.makedirs(self.outimagepath)
-        os.makedirs(self.outlabelpath)
+        if not os.path.exists(self.outimagepath):
+            os.makedirs(self.outimagepath)
+        if not os.path.exists(self.outlabelpath):
+            os.makedirs(self.outlabelpath)
 
     ## point: (x, y), rec: (xmin, ymin, xmax, ymax)
     # def __del__(self):
@@ -253,7 +244,20 @@ class splitbase():
 
 if __name__ == '__main__':
     # example usage of ImgSplit
-    split_train = splitbase(r'/home/marina/Workspace/Dataset/DOTA/train/', r'/home/marina/Workspace/Dataset/DOTA-ImgSplit/train/', gap=200)
-    split_train.splitdata(1)
-    split_val = splitbase(r'/home/marina/Workspace/Dataset/DOTA/val/', r'/home/marina/Workspace/Dataset/DOTA-ImgSplit/val/', gap=200)
-    split_val.splitdata(1)
+    dataset_root = "/home/marina/Workspace/Dataset/"
+    basepath_train = dataset_root + r'DOTA/train/'
+    outpath_train = dataset_root + r'DOTA-ImgSplit/train/'
+    basepath_val = dataset_root + r'DOTA/val/'
+    outpath_val = dataset_root + r'DOTA-ImgSplit/val/'
+
+    split_train_1024_200 = splitbase(basepath_train, outpath_train, subsize=1024, gap=200)
+    split_val_1024_200 = splitbase(basepath_val, outpath_val, subsize=1024, gap=200)
+
+    # split_train_1024_200.splitdata(0.5)
+    split_train_1024_200.splitdata(1.0)
+    # split_train_1024_200.splitdata(1.5)
+
+    # split_val_1024_200.splitdata(0.5)
+    split_val_1024_200.splitdata(1.0)
+    # split_val_1024_200.splitdata(1.5)
+

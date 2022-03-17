@@ -23,28 +23,19 @@ python setup.py build_ext --inplace
 
 ### 修改ImgSplit.py的main函数
 
-```
-# example usage of ImgSplit
-split_train = splitbase(r'/home/marina/Workspace/Dataset/DOTA/train/', r'/home/marina/Workspace/Dataset/DOTA-ImgSplit/train/', gap=200)
-split_train.splitdata(1)
-split_val = splitbase(r'/home/marina/Workspace/Dataset/DOTA/val/', r'/home/marina/Workspace/Dataset/DOTA-ImgSplit/val/', gap=200)
-split_val.splitdata(1)
-```
-
 以及其他一些修改
 
 ```shell
+cd Workspace/Dataset/
+rm -rf DOTA-ImgSplit-COCO/
+rm -rf DOTA-ImgSplit/
+cd ../DOTA_devkit-master/
 python ImgSplit.py
 # 100%|███████████████████████████████████████████████████████████████████████████████████████| 1411/1411 [18:20<00:00,  1.28it/s]
 # 100%|█████████████████████████████████████████████████████████████████████████████████████████| 458/458 [06:05<00:00,  1.25it/s]
 ```
 
 ### 修改DOTA2COCO.py的main函数
-
-```
-DOTA2COCO(r'/home/marina/Workspace/Dataset/DOTA-ImgSplit/train/', r'/home/marina/Workspace/Dataset/DOTA-ImgSplit-COCO/annotations/instances_train2017.json')
-DOTA2COCO(r'/home/marina/Workspace/Dataset/DOTA-ImgSplit/val/', r'/home/marina/Workspace/Dataset/DOTA-ImgSplit-COCO/annotations/instances_val2017.json')
-```
 
 以及其他一些修改
 
@@ -59,13 +50,15 @@ python DOTA2COCO.py
 ```shell
 ln -s /home/marina/Workspace/Dataset/DOTA-ImgSplit/train/images /home/marina/Workspace/Dataset/DOTA-ImgSplit-COCO/train2017
 ln -s /home/marina/Workspace/Dataset/DOTA-ImgSplit/val/images /home/marina/Workspace/Dataset/DOTA-ImgSplit-COCO/val2017
+ln -s /home/marina/Workspace/Dataset/DOTA-ImgSplit/ /home/ubuntu/Dataset/
+ln -s /home/marina/Workspace/Dataset/DOTA-ImgSplit-COCO/ /home/ubuntu/Dataset/
 ```
 
 至此完成数据集路径搭建：
 
 .../  
-├─ Dataset  
-········├─ DOTA  
+├─ Workspace/Dataset  
+········├─ DOTA (link)  
 ················├─ train  
 ························├─ images  
 ································├─ P0000.png  
@@ -145,5 +138,5 @@ wordname_15 = ['plane', 'baseball-diamond', 'bridge', 'ground-track-field', 'sma
 
 Copyright (c) 2022 Marina Akitsuki. All rights reserved.
 
-Date modified: 2022/02/19
+Date modified: 2022/03/07
 

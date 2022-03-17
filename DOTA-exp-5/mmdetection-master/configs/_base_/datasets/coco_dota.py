@@ -1,6 +1,6 @@
 # dataset settings
 dataset_type = 'Dota2CocoDataset'
-data_root = '/home/ubuntu/Dataset/DOTA-ImgSplit-COCO/'
+data_root = '/home/marina/Workspace/Dataset/DOTA-ImgSplit-COCO/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
