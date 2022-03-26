@@ -17,6 +17,27 @@ pip install -v -e .
 sudo apt install swig
 swig -c++ -python polyiou.i
 python setup.py build_ext --inplace
+pip install shapely tqdm
+```
+
+## DOTA数据集创建
+
+使用官网下载的数据集解压创建
+
+```shell
+# cd ~/Workspace/DOTA_devkit-master/
+# mkdir /home/ubuntu/Dataset/DOTA/
+# ln -s /home/ubuntu/Dataset/DOTA/ /home/marina/Workspace/Dataset/
+python md5_calc.py --path /home/marina/Workspace/Dataset/DOTA/train.tar.gz
+# cfb5007ada913241e02c24484e12d5d2
+python md5_calc.py --path /home/marina/Workspace/Dataset/DOTA/val.tar.gz
+# a53e74b0d69dacf3ffcb438accd60c45
+tar -xzf /home/marina/Workspace/Dataset/DOTA/train.tar.gz -C /home/marina/Workspace/Dataset/DOTA/
+tar -xzf /home/marina/Workspace/Dataset/DOTA/val.tar.gz -C /home/marina/Workspace/Dataset/DOTA/
+python dir_list.py --path /home/marina/Workspace/Dataset/DOTA/train/images/ --output /home/marina/Workspace/Dataset/DOTA/train/trainset.txt
+# 1411
+python dir_list.py --path /home/marina/Workspace/Dataset/DOTA/val/images/ --output /home/marina/Workspace/Dataset/DOTA/val/valset.txt
+# 458
 ```
 
 ## 一些修改
@@ -26,7 +47,7 @@ python setup.py build_ext --inplace
 以及其他一些修改
 
 ```shell
-cd Workspace/Dataset/
+cd ~/Workspace/Dataset/
 rm -rf DOTA-ImgSplit-COCO/
 rm -rf DOTA-ImgSplit/
 cd ../DOTA_devkit-master/
@@ -35,14 +56,17 @@ python ImgSplit.py
 # 100%|█████████████████████████████████████████████████████████████████████████████████████████| 458/458 [06:05<00:00,  1.25it/s]
 ```
 
-### 修改DOTA2COCO.py的main函数
+### 修改DOTA2COCO.py为DOTA2COCO_rotated.py
 
 以及其他一些修改
 
 ```shell
-python DOTA2COCO.py
+python DOTA2COCO_rotated.py
 # 100%|█████████████████████████████████████████████████████████████████████████████████████| 15749/15749 [06:14<00:00, 42.05it/s]
 # 100%|███████████████████████████████████████████████████████████████████████████████████████| 5297/5297 [02:04<00:00, 42.70it/s]
+python DOTA2COCO_rotated.py
+# 100%|█████████████████████████████████████████████████████████████████████████████████████| 60637/60637 [45:14<00:00, 22.34it/s]
+# 100%|█████████████████████████████████████████████████████████████████████████████████████| 20579/20579 [16:37<00:00, 20.62it/s]
 ```
 
 ### 创建数据集软链接
@@ -64,11 +88,12 @@ ln -s /home/marina/Workspace/Dataset/DOTA-ImgSplit-COCO/ /home/ubuntu/Dataset/
 ································├─ P0000.png  
 ································├─ P0001.png  
 ································└─ ...  
-························└─ labelTxt  
+························├─ labelTxt  
 ································├─ P0000.txt  
 ································├─ P0001.txt  
 ································└─ ...  
-················├─ val  
+························└─ trainset.txt  
+················└─ val  
 ························├─ images  
 ································├─ P0003.png  
 ································├─ P0004.png  
@@ -78,8 +103,6 @@ ln -s /home/marina/Workspace/Dataset/DOTA-ImgSplit-COCO/ /home/ubuntu/Dataset/
 ································├─ P0004.txt  
 ································└─ ...  
 ························└─ valset.txt  
-················├─ trainval  
-················└─ test  
 ········├─ DOTA-ImgSplit  
 ················├─ train  
 ························├─ images  
@@ -138,5 +161,5 @@ wordname_15 = ['plane', 'baseball-diamond', 'bridge', 'ground-track-field', 'sma
 
 Copyright (c) 2022 Marina Akitsuki. All rights reserved.
 
-Date modified: 2022/03/07
+Date modified: 2022/03/25
 

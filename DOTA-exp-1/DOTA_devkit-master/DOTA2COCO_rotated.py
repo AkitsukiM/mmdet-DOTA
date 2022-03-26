@@ -129,14 +129,17 @@ def DOTA2COCO(srcpath, destfile, is_rotated = False):
 
 if __name__ == '__main__':
     dataset_root = "/home/marina/Workspace/Dataset/"
-    srcpath_train = dataset_root + r'DOTA-ImgSplit/train/'
-    destfile_train = dataset_root + r'DOTA-ImgSplit-COCO/annotations/instances_train2017.json'
-    srcpath_val = dataset_root + r'DOTA-ImgSplit/val/'
-    destfile_val = dataset_root + r'DOTA-ImgSplit-COCO/annotations/instances_val2017.json'
-    # srcpath_test = dataset_root + r'DOTA-ImgSplit/val/'
-    # destfile_test = dataset_root + r'DOTA-ImgSplit-COCO/annotations/instances_test2017.json'
+
+    srcpath_train           = dataset_root + r'DOTA-ImgSplit/train/'
+    destfile_train          = dataset_root + r'DOTA-ImgSplit-COCO/annotations/instances_train2017.json'
+    destfile_train_mssplit  = dataset_root + r'DOTA-ImgSplit-COCO/annotations/instances_train2017_mssplit.json'
+    srcpath_val             = dataset_root + r'DOTA-ImgSplit/val/'
+    destfile_val            = dataset_root + r'DOTA-ImgSplit-COCO/annotations/instances_val2017.json'
+    destfile_val_mssplit    = dataset_root + r'DOTA-ImgSplit-COCO/annotations/instances_val2017_mssplit.json'
 
     DOTA2COCO(srcpath_train, destfile_train, is_rotated = True)
     DOTA2COCO(srcpath_val, destfile_val)
-    # DOTA2COCO(srcpath_test, destfile_test)
+
+    # DOTA2COCO(srcpath_train, destfile_train_mssplit, is_rotated = True)
+    # DOTA2COCO(srcpath_val, destfile_val_mssplit)
 

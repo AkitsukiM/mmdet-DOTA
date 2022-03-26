@@ -65,8 +65,6 @@ class HBB_pkl_reader(object):
         self.split_jsonpath = self.dataset_root + r'DOTA-ImgSplit-COCO/annotations/instances_val2017.json'
         # 分割后的标注txt文件
         self.split_annopath = self.dataset_root + r'DOTA-ImgSplit/val/labelTxt/{:s}.txt'
-        # 分割后的图片名文件
-        self.split_imagesetfile = self.dataset_root + r'DOTA-ImgSplit/val/valset.txt'
 
         self.classnames = ['plane', 'baseball-diamond', 'bridge', 'ground-track-field', 'small-vehicle', 'large-vehicle', 'ship', 'tennis-court',
                            'basketball-court', 'storage-tank',  'soccer-ball-field', 'roundabout', 'harbor', 'swimming-pool', 'helicopter']
@@ -92,12 +90,6 @@ class HBB_pkl_reader(object):
 
         self.nms_thresh = nms_thresh
         self.mode = mode
-
-    def write_split_imagesetfile(self):
-        # 把ind_to_imagefile_map的value写到split_imagesetfile里去
-        with open(self.split_imagesetfile, 'w') as f:
-            for imgname in self.img_imgnames:
-                f.write(imgname[:-4] + '\n')
 
     def write_saveDir(self):
         # 把未merge的结果写到saveDir下
@@ -221,8 +213,6 @@ class HBB_pkl_reader(object):
         print('classaps: ', classaps)
 
     def main(self):
-        # self.write_split_imagesetfile()
-
         self.write_saveDir()
         if self.mode == 1 or self.mode == 3:
             self.visualize_saveDir()

@@ -102,10 +102,15 @@ train_pipeline = [
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
 ]
+
+data_root = '/home/marina/Workspace/Dataset/DOTA-ImgSplit-COCO/'
 data = dict(
     samples_per_gpu=2,
     workers_per_gpu=2,
-    train=dict(pipeline=train_pipeline))
+    train=dict(
+        ann_file=data_root + 'annotations/instances_train2017.json',
+        img_prefix=data_root + 'train2017/',
+        pipeline=train_pipeline))
 
 optimizer = dict(
     _delete_=True,
@@ -119,7 +124,9 @@ optimizer = dict(
             'relative_position_bias_table': dict(decay_mult=0.),
             'norm': dict(decay_mult=0.)
         }))
-lr_config = dict(warmup_iters=1000, step=[27, 33])
+# lr_config = dict(warmup_iters=1000, step=[27, 33])
+lr_config = dict(_delete_=True, policy='CosineAnnealing', warmup='linear', warmup_iters=1000, warmup_ratio=0.001, min_lr=0.)
+
 runner = dict(max_epochs=36)
 
 

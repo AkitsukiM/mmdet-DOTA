@@ -253,11 +253,11 @@ if __name__ == '__main__':
     split_train_1024_200 = splitbase(basepath_train, outpath_train, subsize=1024, gap=200)
     split_val_1024_200 = splitbase(basepath_val, outpath_val, subsize=1024, gap=200)
 
-    # split_train_1024_200.splitdata(0.5)
+    # split_train_1024_200.splitdata(0.75)
     split_train_1024_200.splitdata(1.0)
     # split_train_1024_200.splitdata(1.5)
 
-    # split_val_1024_200.splitdata(0.5)
+    # split_val_1024_200.splitdata(0.75)
     split_val_1024_200.splitdata(1.0)
     # split_val_1024_200.splitdata(1.5)
 
