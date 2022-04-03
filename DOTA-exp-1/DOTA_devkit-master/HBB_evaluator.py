@@ -22,17 +22,17 @@ from dota_evaluation_task2 import voc_eval
 from visualize import *
 
 
-class HBB_pkl_reader(object):
+class HBB_evaluator(object):
     """
     """
-    def __init__(self, work_root, pkl_name, dataset_root, nms_thresh = 0.3, mode = 0):
+    def __init__(self, work_root, pkl, dataset_root, nms_thresh = 0.3, mode = 0):
         # 工作路径
         self.work_root = work_root
         # 工作路径下的子路径
         self.saveDir = self.work_root + "Task2/"
         self.mergeDir = self.work_root + "Task2_merge/"
         self.visualDir = self.work_root + "visual/"
-        self.resultPickle = self.work_root + pkl_name
+        self.resultPickle = self.work_root + pkl
 
         # remakedirs
         if os.path.exists(self.saveDir):
@@ -227,11 +227,11 @@ class HBB_pkl_reader(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--work_root", type = str, default = "/home/marina/Workspace/DOTA_devkit-master/", help = "work root")
-    parser.add_argument("--pkl_name", type = str, default = "xxx.pkl", help = "e.g. xxx.pkl")
+    parser.add_argument("--pkl", type = str, default = "xxx.pkl", help = "e.g. xxx.pkl")
     parser.add_argument("--dataset_root", type = str, default = "/home/marina/Workspace/Dataset/", help = "dataset root")
     parser.add_argument("--nms_thresh", type = float, default = 0.5, help = "nms_thresh when merge")
     parser.add_argument("--mode", type = int, default = 0, help = "visualize mergeDir|saveDir: 0-00, 1-01, 2-10, 3-11")
     opt = parser.parse_args()
 
-    HBB_pkl_reader(work_root = opt.work_root, pkl_name = opt.pkl_name, dataset_root = opt.dataset_root, nms_thresh = opt.nms_thresh, mode = opt.mode).main()
+    HBB_evaluator(work_root = opt.work_root, pkl = opt.pkl, dataset_root = opt.dataset_root, nms_thresh = opt.nms_thresh, mode = opt.mode).main()
 

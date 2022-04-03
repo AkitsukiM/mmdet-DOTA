@@ -1,6 +1,6 @@
 # 删除进度条
 
-filename = 'nohup'
+filename = 'nohup2'
 
 with open(filename + '.log', 'r') as r:
     lines = r.readlines()

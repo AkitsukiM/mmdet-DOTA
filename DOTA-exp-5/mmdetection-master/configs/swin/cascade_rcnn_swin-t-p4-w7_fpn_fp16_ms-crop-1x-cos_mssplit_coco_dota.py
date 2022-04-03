@@ -108,7 +108,7 @@ data = dict(
     samples_per_gpu=2,
     workers_per_gpu=2,
     train=dict(
-        ann_file=data_root + 'annotations/instances_train2017.json',
+        ann_file=data_root + 'annotations/instances_train2017_mssplit.json',
         img_prefix=data_root + 'train2017/',
         pipeline=train_pipeline))
 
@@ -125,9 +125,8 @@ optimizer = dict(
             'norm': dict(decay_mult=0.)
         }))
 # lr_config = dict(warmup_iters=1000, step=[27, 33])
-lr_config = dict(_delete_=True, policy='CosineAnnealing', warmup='linear', warmup_iters=1000, warmup_ratio=0.001, min_lr=0.)
-
-runner = dict(max_epochs=36)
+# runner = dict(max_epochs=36)
+lr_config = dict(_delete_=True, policy='CosineAnnealing', warmup='linear', warmup_iters=500, warmup_ratio=0.001, min_lr=0.)
 
 
 # from './mask_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco.py' ##### #####

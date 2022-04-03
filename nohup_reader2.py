@@ -1,6 +1,6 @@
 # 保留测试结果
 
-filename = '20220325_005710'
+filename = '20220329_193006'
 
 with open(filename + '.log', 'r') as r:
     lines = r.readlines()

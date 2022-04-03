@@ -149,17 +149,24 @@ wordname_15 = ['plane', 'baseball-diamond', 'bridge', 'ground-track-field', 'sma
 
 ### 训练与测试
 
-见DOTA-exp-5。得到pkl文件。
+```shell
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 nohup ./tools/dist_train.sh ./configs/swin/cascade_rcnn_swin-b-p4-w7_fpn_fp16_ms-crop-1x-cos_mssplit_coco_dota.py 8 > nohup.log 2>&1 &
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 ./tools/dist_test.sh ./configs/swin/swin-b_ms-test_max-1000.py ./work_dirs/save_1/epoch_12.pth 8 --out /home/marina/Workspace/DOTA_devkit-master/save_1_12.pkl --eval bbox
+```
 
 ### 合并
 
-修改dota_evaluation_task2.py中的parse_gt函数
+修改dota_evaluation_task2.py
 
-编写试作型HBB_pkl_reader.py
+编写试作型HBB_evaluator.py
+
+```shell
+python HBB_evaluator.py --pkl save_1_12.pkl
+```
 
 -----
 
 Copyright (c) 2022 Marina Akitsuki. All rights reserved.
 
-Date modified: 2022/03/25
+Date modified: 2022/03/30
 

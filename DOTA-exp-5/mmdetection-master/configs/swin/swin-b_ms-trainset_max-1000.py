@@ -1,4 +1,4 @@
-_base_ = './cascade_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-1x-cos_mssplit_coco_dota.py'
+_base_ = './cascade_rcnn_swin-b-p4-w7_fpn_fp16_ms-crop-1x-cos_mssplit_coco_dota.py'
 
 
 model = dict(
@@ -31,10 +31,10 @@ test_pipeline = [
 
 data_root = '/home/marina/Workspace/Dataset/DOTA-ImgSplit-COCO/'
 data = dict(
-    samples_per_gpu=2,
+    samples_per_gpu=1,
     workers_per_gpu=2,
     test=dict(
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
+        ann_file=data_root + 'annotations/instances_train2017.json',
+        img_prefix=data_root + 'train2017/',
         pipeline=test_pipeline))
 

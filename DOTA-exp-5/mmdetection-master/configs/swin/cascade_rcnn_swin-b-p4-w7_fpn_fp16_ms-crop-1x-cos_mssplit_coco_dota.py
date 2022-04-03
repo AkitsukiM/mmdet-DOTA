@@ -1,4 +1,4 @@
-_base_ = './cascade_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco_dota.py'
+_base_ = './cascade_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-1x-cos_mssplit_coco_dota.py'
 
 
 # from https://github.com/SwinTransformer/Swin-Transformer-Object-Detection/blob/master/configs/swin/cascade_mask_rcnn_swin_base_patch4_window7_mstrain_480-800_giou_4conv1f_adamw_3x_coco.py ##### #####

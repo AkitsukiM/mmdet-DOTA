@@ -16,6 +16,8 @@
 
 6.  由1x加到3x（即12epochs加到36epochs）
 
+> 实际swin-b 3x可能存在过拟合，性能不如1x
+
 7.  引入了ms_crop（多尺度随机裁剪）和fp16
 
 8.  参考ATSS引入了多尺度测试
@@ -38,33 +40,35 @@
 
 复制粘贴替换即可，具体操作请参考md文件
 
-## 当前最高性能（step 1-12）
+## 当前最高性能
+
+./configs/swin/cascade_rcnn_swin-b-p4-w7_fpn_fp16_ms-crop-1x-cos_mssplit_coco_dota.py
 
 before merge:
 
 ```
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.482
- Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.779
- Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.540
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = 0.368
- Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = 0.507
- Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.569
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.603
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.626
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.631
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = 0.517
- Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = 0.640
- Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.690
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.497
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.792
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.565
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = 0.369
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = 0.525
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.589
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.617
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.640
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.646
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = 0.532
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = 0.663
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.703
 ```
 
 after merge:
 
 ```
-map: 0.7830074123341149
-classaps:  [96.94026914 86.73521017 46.66968419 68.36142512 72.35036478 84.95429386
- 93.71276841 95.66885508 71.70114309 85.77073779 67.09983308 71.35375173
- 86.16385033 71.58292262 75.4460091 ]
-```
+map: 0.7974354383530472
+classaps:  [96.55515437 86.21554212 51.56218015 70.44300857 75.97639088 85.08734328
+ 93.8754054  95.67118635 67.87557239 87.15264044 66.28714247 76.71218426
+ 86.44675531 72.358785   83.93386654]
+ ```
 
 ## 参考资料
 
@@ -82,5 +86,5 @@ Swin Transformer：https://github.com/SwinTransformer/Swin-Transformer-Object-De
 
 Copyright (c) 2022 Marina Akitsuki. All rights reserved.
 
-Date modified: 2022/03/26
+Date modified: 2022/03/30
 
