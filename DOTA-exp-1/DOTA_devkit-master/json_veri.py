@@ -6,7 +6,7 @@ from pycocotools.coco import COCO
 class Json_veri(object):
     """
     """
-    def __init__(self, jsonpath, wmax = 1024, hmax = 1024):
+    def __init__(self, jsonpath, wmax = 1024, hmax = 1024, max_per_img = 675):
         # ref: https://cocodataset.org/#format-data
         # ref: https://github.com/cocodataset/cocoapi
 
@@ -22,6 +22,7 @@ class Json_veri(object):
 
         self.wmax = wmax
         self.hmax = hmax
+        self.max_per_img = max_per_img
 
     def check_imgsize(self):
         for img in tqdm(self.imgs):
@@ -30,14 +31,20 @@ class Json_veri(object):
 
     def check_bboxsize(self):
         dict = {}
-        empty_bbox = 0
+        img_with_0_bboxes = 0
+        img_with_too_many_bboxes = 0
+        max_num = 0
         for imgId in self.imgIds:
             dict[imgId] = []
         for gt in self.gts:
             dict[gt["image_id"]].append(gt["bbox"])
         for value in tqdm(dict.values()):
-            if len(value) == 0: empty_bbox += 1
-        print("empty_bbox:", empty_bbox)
+            if len(value) == 0:                 img_with_0_bboxes += 1
+            if len(value) > self.max_per_img:   img_with_too_many_bboxes += 1
+            if len(value) > max_num:            max_num = len(value)
+        print("img_with_0_bboxes:",             img_with_0_bboxes)
+        print("img_with_too_many_bboxes:",      img_with_too_many_bboxes)
+        print("max_num:",                       max_num)
 
     def main(self):
         self.check_imgsize()

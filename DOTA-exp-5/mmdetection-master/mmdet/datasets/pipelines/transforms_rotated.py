@@ -229,7 +229,7 @@ class BoxToBox(object):
         else:
             pass
 
-    def trans(self, bboxes):
+    def transf(self, bboxes):
         if len(bboxes) == 0:
             return np.zeros((0, self.shapeout), dtype=np.float32)
         assert bboxes.shape[-1] % self.shapein == 0
@@ -239,13 +239,36 @@ class BoxToBox(object):
 
     def __call__(self, results):
         gt_bboxes = results.get('gt_bboxes', [])
-        gt_bboxes = self.trans(gt_bboxes)
+        gt_bboxes = self.transf(gt_bboxes)
         results['gt_bboxes'] = gt_bboxes
 
         gt_bboxes_ignore = results.get('gt_bboxes_ignore', [])
-        gt_bboxes_ignore = self.trans(gt_bboxes_ignore)
+        gt_bboxes_ignore = self.transf(gt_bboxes_ignore)
         results['gt_bboxes_ignore'] = gt_bboxes_ignore
 
+        return results
+
+
+@PIPELINES.register_module()
+class GtMaxPerImg(object):
+    def __init__(self, max_per_img = 0):
+        self.max_per_img = max_per_img
+
+    def random_keep(self, x):
+        if self.max_per_img != 0 and x > self.max_per_img:
+            keep_inds = np.random.permutation(x)[:self.max_per_img]
+            return keep_inds
+        return None
+
+    def __call__(self, results):
+        gt_bboxes = results.get('gt_bboxes', [])
+        labels = results.get('gt_labels', [])
+        keep_inds = self.random_keep(len(gt_bboxes))
+        if keep_inds is not None:
+            gt_bboxes = gt_bboxes[keep_inds, :]
+            labels = labels[keep_inds]
+        results['gt_bboxes'] = gt_bboxes
+        results['gt_labels'] = labels
         return results
 
 

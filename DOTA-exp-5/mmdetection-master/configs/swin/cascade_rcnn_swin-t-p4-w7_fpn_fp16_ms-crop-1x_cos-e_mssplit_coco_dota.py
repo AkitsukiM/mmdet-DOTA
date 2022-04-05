@@ -31,40 +31,49 @@ img_norm_cfg = dict(
     # mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
     mean=[81.93, 82.84, 78.56], std=[47.23, 45.73, 44.41], to_rgb=True)
 
+# WHY WE NEED BoxToBox #
+# 
+# From https://cocodataset.org/#format-data ,
+# we can know the original coco bbox format is:
+# [x, y, width, height]
+# and after {def _parse_ann_info in class CocoDataset in mmdet/datasets/coco.py} with {class LoadAnnotations in mmdet/datasets/pipelines/loading.py}
+# we can know the bbox format is:
+# [xmin, xmax, ymin, ymax]
+# 
+# However, when we create dota2coco json, we use the bbox format as
+# [x_ctr, y_ctr, width, height, angle]
+# To satisfy this format, we change the {def _parse_ann_info in class Dota2CocoDataset in mmdet/datasets/dota2coco.py}
+# so that the bbox entering 'RotatedRandomFlip' still has the format of [x_ctr, y_ctr, width, height, angle]
+# for both gt_bboxes and gt_bboxes_ignore
+# 
+# Finally, we use 'rotated_box_to_bbox_np' to change the bbox format to
+# [xmin, xmax, ymin, ymax]
+# so that the bbox entering 'Resize' would be correct
+# 
+
 # augmentation strategy originates from DETR / Sparse RCNN
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
+    # ver 1.00
+    # dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
+    # dict(type='RandomFlip', flip_ratio=0.5),
+    # 
+    # ver 1.01
     # dict(type='BoxToBox', mode='rotated_box_to_bbox_np'),
     # dict(type='RandomFlip', flip_ratio=[0.25, 0.25], direction = ['horizontal', 'vertical']),
     # 
-    # from https://github.com/csuhan/s2anet/blob/master/configs/hrsc2016/s2anet_r50_fpn_3x_hrsc2016.py ##### #####
+    # ver 1.02
+    # RandomRotate from https://github.com/csuhan/s2anet/blob/master/configs/hrsc2016/s2anet_r50_fpn_3x_hrsc2016.py ##### #####
     # 
     # dict(type='TempVisualize', note = '0-ori', img_rewrite = False, sys_exit = False),
     dict(type='RotatedRandomFlip', flip_ratio=0.5),
     # dict(type='TempVisualize', note = '1-flip', img_rewrite = False, sys_exit = False),
     dict(type='RandomRotate', rotate_ratio=0.5),
     # dict(type='TempVisualize', note = '2-rotate', img_rewrite = True, sys_exit = False),
-    # 
-    # From https://cocodataset.org/#format-data ,
-    # we can know the original coco bbox format is:
-    # [x, y, width, height]
-    # and after {def _parse_ann_info in class CocoDataset in mmdet/datasets/coco.py} with {class LoadAnnotations in mmdet/datasets/pipelines/loading.py}
-    # we can know the bbox format is:
-    # [xmin, xmax, ymin, ymax]
-    # 
-    # However, when we create dota2coco json, we use the bbox format as
-    # [x_ctr, y_ctr, width, height, angle]
-    # To satisfy this format, we change the {def _parse_ann_info in class Dota2CocoDataset in mmdet/datasets/dota2coco.py}
-    # so that the bbox entering 'RotatedRandomFlip' still has the format of [x_ctr, y_ctr, width, height, angle]
-    # for both gt_bboxes and gt_bboxes_ignore
-    # 
-    # Finally, we use 'rotated_box_to_bbox_np' to change the bbox format to
-    # [xmin, xmax, ymin, ymax]
-    # so that the bbox entering 'Resize' would be correct
-    # 
     dict(type='BoxToBox', mode='rotated_box_to_bbox_np'),
     # dict(type='TempVisualize', note='3-final', img_rewrite = False, sys_exit = True),
+    # 
     dict(
         type='AutoAugment',
         policies=[[
@@ -126,7 +135,8 @@ optimizer = dict(
         }))
 # lr_config = dict(warmup_iters=1000, step=[27, 33])
 # runner = dict(max_epochs=36)
-lr_config = dict(_delete_=True, policy='CosineAnnealing', warmup='linear', warmup_iters=500, warmup_ratio=0.001, min_lr=0.)
+# from https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py ##### #####
+lr_config = dict(_delete_=True, policy='CosineAnnealing', by_epoch=True, warmup='linear', warmup_iters=500, warmup_ratio=0.001, min_lr=0.)
 
 
 # from './mask_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco.py' ##### #####

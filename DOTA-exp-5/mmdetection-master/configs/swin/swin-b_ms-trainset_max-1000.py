@@ -1,4 +1,4 @@
-_base_ = './cascade_rcnn_swin-b-p4-w7_fpn_fp16_ms-crop-1x-cos_mssplit_coco_dota.py'
+_base_ = './cascade_rcnn_swin-b-p4-w7_fpn_fp16_ms-crop-1x_cos-e_mssplit_coco_dota.py'
 
 
 model = dict(
@@ -14,10 +14,9 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        # from https://github.com/sfzhang15/ATSS/blob/master/configs/atss/atss_dcnv2_X_101_64x4d_FPN_2x.yaml ##### #####
-        img_scale=[(400, 3000), (500, 3000), (600, 3000), (640, 3000),
-                   (700, 3000), (900, 3000), (1000, 3000), (1100, 3000),
-                   (1200, 3000), (1300, 3000), (1400, 3000), (1800, 3000)],
+        img_scale=[(400, 3000), (500, 3000), (600, 3000), (700, 3000),
+                   (800, 3000), (900, 3000), (1000, 3000), (1100, 3000),
+                   (1200, 3000), (1300, 3000), (1400, 3000), (1600, 3000), (1800, 3000)],
         flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=True),

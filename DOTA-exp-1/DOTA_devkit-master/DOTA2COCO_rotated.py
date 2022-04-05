@@ -54,7 +54,7 @@ def poly_to_rotated_box_single(poly):
     return rotated_box
 
 
-def DOTA2COCO(srcpath, destfile, is_rotated = False):
+def DOTA2COCO(srcpath, destfile, is_rotated = False, max_per_img = 0):
     imageparent = os.path.join(srcpath, 'images')
     labelparent = os.path.join(srcpath, 'labelTxt')
 
@@ -102,6 +102,9 @@ def DOTA2COCO(srcpath, destfile, is_rotated = False):
 
             # annotations
             objects = util.parse_dota_poly2(file)
+            if max_per_img != 0 and len(objects) > max_per_img:
+                image_id = image_id + 1
+                continue
             for obj in objects:
                 single_obj = {}
                 single_obj['area'] = obj['area']
@@ -137,9 +140,9 @@ if __name__ == '__main__':
     destfile_val            = dataset_root + r'DOTA-ImgSplit-COCO/annotations/instances_val2017.json'
     destfile_val_mssplit    = dataset_root + r'DOTA-ImgSplit-COCO/annotations/instances_val2017_mssplit.json'
 
-    DOTA2COCO(srcpath_train, destfile_train, is_rotated = True)
-    DOTA2COCO(srcpath_val, destfile_val)
+    # DOTA2COCO(srcpath_train, destfile_train, is_rotated = True)
+    DOTA2COCO(srcpath_train, destfile_train_mssplit, is_rotated = True, max_per_img = 675)
 
-    # DOTA2COCO(srcpath_train, destfile_train_mssplit, is_rotated = True)
+    # DOTA2COCO(srcpath_val, destfile_val)
     # DOTA2COCO(srcpath_val, destfile_val_mssplit)
 
