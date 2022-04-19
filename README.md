@@ -1,5 +1,7 @@
 # DOTA数据集目标检测相关工作
 
+## 无限期停止更新
+
 ## 目前进展
 
 1.  DOTA数据集向COCO数据集格式的转换，包括图片分割、json文件生成、MMDet中对应的数据集类型搭建
@@ -34,9 +36,9 @@
 
 12. 参考s2anet引入了训练集多尺度分割
 
-> 倍率0.5会造成GeForce RTX 2080Ti 11019MiB "cuda out of memory"，原因不明
-> 因此我们目前使用倍率0.75/1.0/1.5，并在生成json文件时滤除gt数大于675的图（675是倍率1.0的最大单图gt数）
-> 测试集多尺度分割反而导致性能下降
+> 倍率0.5会造成GeForce RTX 2080Ti 11019MiB "cuda out of memory"，原因不明  
+> 因此我们目前使用倍率0.75/1.0/1.5，并在生成json文件时滤除gt数大于675的图（675是倍率1.0的最大单图gt数）  
+> 测试集多尺度分割反而导致性能下降  
 
 以及其他一些小工具
 
@@ -90,5 +92,5 @@ Swin Transformer：https://github.com/SwinTransformer/Swin-Transformer-Object-De
 
 Copyright (c) 2022 Marina Akitsuki. All rights reserved.
 
-Date modified: 2022/04/05
+Date modified: 2022/04/19
 

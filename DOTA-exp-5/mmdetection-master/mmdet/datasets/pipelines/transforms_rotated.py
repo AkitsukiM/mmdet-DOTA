@@ -4,11 +4,10 @@
 # 1. from ..builder import PIPELINES
 # 2. @PIPELINES.register_module()
 # 3. rewrite class RotatedRandomFlip
-# 4. rate -> rotate_ratio
+# 4. rate -> rotate_ratio, angles -> angles & angles_type
 # 5. remove auto_bound
-# 6. new class BoxToBox, TempVisualize
+# 6. new class BoxToBox
 # 
-
 
 import random
 
@@ -18,11 +17,6 @@ import numpy as np
 from mmdet.core import poly_to_rotated_box_np, rotated_box_to_poly_np, norm_angle, bbox_to_rotated_box_np, rotated_box_to_bbox_np
 from .transforms import RandomFlip, Resize
 from ..builder import PIPELINES
-
-
-from .visualize import *
-import os
-import sys
 
 
 @PIPELINES.register_module()
@@ -55,6 +49,8 @@ class RotatedRandomFlip(RandomFlip):
         Returns:
             numpy.ndarray: Flipped bounding boxes.
         """
+        if len(bboxes) == 0:
+            return np.zeros((0, 5), dtype=np.float32)
         assert bboxes.shape[-1] % 5 == 0
         if direction == 'horizontal':
             w = img_shape[1]
@@ -106,20 +102,28 @@ class PesudoRotatedResize(Resize):
 class RandomRotate(object):
     def __init__(self,
                  rotate_ratio=0.5,
-                 angles=[30, 60, 90, 120, 150]):
+                 angles=[0, 180],
+                 angles_type='absolute_range'):
         #          auto_bound=False):
         self.rotate_ratio = rotate_ratio
         self.angles = angles
+        self.angles_type = angles_type
+        assert angles_type in ['absolute', 'absolute_range']
         # new image shape or not
         # self.auto_bound = auto_bound
 
     @property
     def rand_angle(self):
-        return random.sample(self.angles, 1)[0]
+        if self.angles_type == 'absolute':
+            return random.sample(self.angles, 1)[0]
+        elif self.angles_type == 'absolute_range':
+            return random.random() * (self.angles[1] - self.angles[0]) + self.angles[0]
+        else:
+            return 0
 
     @property
     def is_rotate(self):
-        return np.random.rand() < self.rotate_ratio
+        return random.random() < self.rotate_ratio
 
     def apply_image(self, img, bound_h, bound_w, interp=cv2.INTER_LINEAR):
         """
@@ -197,11 +201,26 @@ class RandomRotate(object):
         gt_bboxes = results.get('gt_bboxes', [])
         labels = results.get('gt_labels', [])
 
+        # no operation if gt_bboxes empty
+        if len(gt_bboxes) == 0:
+            return None
+        # no rotation if angle is 0 or np.pi / 2
+        # e.g. 'storage-tank', 'roundabout', etc.
+        CLASSES = ('plane', 'baseball-diamond', 'bridge', 'ground-track-field', 'small-vehicle', 'large-vehicle', 'ship', 'tennis-court',
+                   'basketball-court', 'storage-tank',  'soccer-ball-field', 'roundabout', 'harbor', 'swimming-pool', 'helicopter')
+        eps = 1e-6
+        gt_bboxes_angles = gt_bboxes[:, -1]
+        gt_bboxes_nr_inds = np.logical_and(
+            np.logical_or(labels == CLASSES.index('storage-tank'),
+                          labels == CLASSES.index('roundabout')),
+            np.logical_or(np.abs(gt_bboxes_angles) < eps,
+                          np.abs(gt_bboxes_angles - np.pi / 2) < eps))
+        # rotate in counter-clockwise direction so compensate in clockwise direction
+        gt_bboxes[gt_bboxes_nr_inds, -1] = norm_angle(gt_bboxes[gt_bboxes_nr_inds, -1] + angle / 180 * np.pi)
+
         polys = rotated_box_to_poly_np(gt_bboxes).reshape(-1, 2)
         polys = self.apply_coords(polys).reshape(-1, 8)
         gt_bboxes = poly_to_rotated_box_np(polys)
-        if len(gt_bboxes) == 0:                                         # ##### ##### #####
-            return None                                                 # ##### ##### #####
         keep_inds = self.filter_border(gt_bboxes, bound_h, bound_w)
         gt_bboxes = gt_bboxes[keep_inds, :]
         labels = labels[keep_inds]
@@ -245,66 +264,6 @@ class BoxToBox(object):
         gt_bboxes_ignore = results.get('gt_bboxes_ignore', [])
         gt_bboxes_ignore = self.transf(gt_bboxes_ignore)
         results['gt_bboxes_ignore'] = gt_bboxes_ignore
-
-        return results
-
-
-@PIPELINES.register_module()
-class GtMaxPerImg(object):
-    def __init__(self, max_per_img = 0):
-        self.max_per_img = max_per_img
-
-    def random_keep(self, x):
-        if self.max_per_img != 0 and x > self.max_per_img:
-            keep_inds = np.random.permutation(x)[:self.max_per_img]
-            return keep_inds
-        return None
-
-    def __call__(self, results):
-        gt_bboxes = results.get('gt_bboxes', [])
-        labels = results.get('gt_labels', [])
-        keep_inds = self.random_keep(len(gt_bboxes))
-        if keep_inds is not None:
-            gt_bboxes = gt_bboxes[keep_inds, :]
-            labels = labels[keep_inds]
-        results['gt_bboxes'] = gt_bboxes
-        results['gt_labels'] = labels
-        return results
-
-
-@PIPELINES.register_module()
-class TempVisualize(object):
-    def __init__(self, note = "", img_rewrite = False, sys_exit = False):
-
-        self.classes = ('plane', 'baseball-diamond', 'bridge', 'ground-track-field', 'small-vehicle', 'large-vehicle', 'ship', 'tennis-court',
-                        'basketball-court', 'storage-tank',  'soccer-ball-field', 'roundabout', 'harbor', 'swimming-pool', 'helicopter')
-        self.work_dirs = "/home/marina/Workspace/mmdetection-master/work_dirs/"
-        self.note = note
-        self.img_rewrite = img_rewrite
-        self.sys_exit = sys_exit
-
-    def __call__(self, results):
-        # WARNING: visualize_boxes() would not change boxes but would change image directly
-        img = (results['img']).copy()
-        gt_bboxes = results.get('gt_bboxes', [])
-        labels = results.get('gt_labels', [])
-        ori_filename = (results['ori_filename'])[:-4]
-
-        if gt_bboxes.shape[-1] == 5:
-            boxes = rotated_box_to_poly_np(gt_bboxes)
-        elif gt_bboxes.shape[-1] == 4 or gt_bboxes.shape[-1] == 8:
-            boxes = gt_bboxes
-        else:
-            raise ValueError(f"Invalid length of gt_bboxes")
-
-        visualize_boxes(image = img, boxes = boxes, labels = labels, probs = np.ones(boxes.shape[0]), class_labels = self.classes)
-        path = os.path.join(self.work_dirs, str(ori_filename) + "-" + str(self.note) + ".png")
-        cv2.imwrite(path, img)
-
-        if self.img_rewrite:
-            results['img'] = img
-        if self.sys_exit:
-            sys.exit(0)
 
         return results
 

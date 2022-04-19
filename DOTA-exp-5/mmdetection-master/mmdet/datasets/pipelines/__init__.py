@@ -17,7 +17,8 @@ from .transforms import (Albu, CutOut, Expand, MinIoURandomCrop, MixUp, Mosaic,
 from .transforms_rotated import (PesudoRotatedRandomFlip,
                                  PesudoRotatedResize, RotatedRandomFlip,
                                  RotatedResize, RandomRotate,
-                                 BoxToBox, GtMaxPerImg, TempVisualize)
+                                 BoxToBox)
+from .transforms_others import (HSVRandomAug, GtFilter, TempVisualize)
 
 __all__ = [
     'Compose', 'to_tensor', 'ToTensor', 'ImageToTensor', 'ToDataContainer',
@@ -34,5 +35,6 @@ __all__ = [
     'PesudoRotatedRandomFlip',
     'PesudoRotatedResize', 'RotatedRandomFlip',
     'RotatedResize', 'RandomRotate',
-    'BoxToBox', 'GtMaxPerImg', 'TempVisualize'
+    'BoxToBox',
+    'HSVRandomAug', 'GtFilter', 'TempVisualize'
 ]
